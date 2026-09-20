@@ -47,7 +47,10 @@ def main():
     ap.add_argument("--date", help="Date: (default: parsed, else now)")
     ap.add_argument("--message-id", help="Message-Id: (default: generated <patch-<hex>@<domain>>)")
     ap.add_argument("--in-reply-to", dest="in_reply_to",
-                    help="In-Reply-To: parent Message-Id (continue a thread)")
+                    help="In-Reply-To: parent Message-Id. Use only for actual replies "
+                         "(answering a reviewer). New revisions of a series go out as a "
+                         "fresh thread - do NOT anchor them to the previous version "
+                         "(netdev's netdev-bot flags that)")
     ap.add_argument("--references",
                     help="References: space-separated <...> (default: the in-reply-to id)")
     ap.add_argument("--notes-file",

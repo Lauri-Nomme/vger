@@ -46,10 +46,10 @@ before the article is indexed in a search engine).
 Build the message exactly as it should appear on the list, then submit it:
 
 ```
-# 1. produce the patch as an email (threaded into an existing thread)
+# 1. produce the patch as an email (a revision goes out as a NEW thread:
+#    do not add In-Reply-To/References pointing at the previous version)
 git format-patch -1 --stdout --subject-prefix="PATCH v2 net" > /tmp/v2.patch
-#    (edit the header block: Subject, and add In-Reply-To / References /
-#     your From when hand-crafting)
+#    (edit the header block: Subject, and add your From when hand-crafting)
 
 # 2. dry-run first (EHLO/MAIL/RCPT only, no DATA)
 python3 send.py \
@@ -72,10 +72,19 @@ Notes on good practice:
 - **Envelope vs headers.** `--from-addr`/`--to`/`--cc` set the envelope
   (MAIL FROM / RCPT). The message file itself carries the visible
   `From:`/`To:`/`Cc:` headers. Keep them consistent.
-- **Threading.** To continue an existing thread, the message must carry
-  `In-Reply-To:` and `References:` pointing at the parent's `Message-Id`
-  (vger's `b4`/`git send-email` do this; prebuild it in the file when using
-  send.py directly).
+- **Threading vs. new series versions** — two different things:
+  - A *reply to a reviewer* (answering feedback, acknowledging points) is a
+    reply: set `In-Reply-To:`/`References:` to the message it answers (b4 and
+    `git send-email` do this automatically).
+  - A *new version of a patch series* (**v2, v3, ...**) must be a **fresh,
+    independent thread** — do **not** set `In-Reply-To:`/`References:` to the
+    previous version. On netdev this is enforced by the `netdev-bot`
+    patch-validation bot (Cc's `kuba@kernel.org`): reply-versions break the
+    tooling (patchwork/b4 series tracking) and are easy for busy reviewers to
+    miss. Progress is tracked solely by the `[PATCH vN <tree>]` subject
+    prefix, so each revision goes out as a new top-level message with the
+    version bumped. If the bot warns you after a send, do **not** repost to
+    "fix" it — just apply the rule to the next revision.
 - **Versioning.** Bump `[PATCH]` → `[PATCH v2]` via `--subject-prefix` (or
   hand-edit Subject), and add a `Version 2:` changelog between the commit
   body's `---` and the diff so `git am` strips it.
