@@ -117,3 +117,17 @@ python3 nntp.py fetch <group> '<message-id>' -o /tmp/landed.eml
 - lore NNTP is plaintext on port 119 (no STARTTLS there); read-only is fine.
 - `send.py` talks STARTTLS on demand (e.g. 587 / public relays); for a
   local/trusted relay plaintext on 25 works.
+## nntp.py thread — follow a whole thread
+
+Given any Message-Id, `thread` walks the `References` chain (ancestors) and then
+scans the group overview forward for descendants, printing the whole thread with
+`*` on the message you asked about and `+` on its direct replies. Handy for
+"did anyone reply to my patch?" without a browser or a full-group scan.
+
+```
+python3 nntp.py thread '<patch-message-id@example.com>'
+python3 nntp.py thread --group org.kernel.vger.linux-kernel '<id>'
+```
+
+It scans forward from the thread root; `--max-scan` (default 60000 articles)
+caps how far, and it says `[scan truncated]` if it hits the cap.
