@@ -78,13 +78,13 @@ def main():
         if a.auth_user:
             pw = os.environ.get("SMTP_PASS") or getpass.getpass("SMTP password: ")
             s.login(a.auth_user, pw)
-        s.mail(a.from_addr)
-        for r in rcpts:
-            code = s.rcpt(r)[0]
-            if code not in (250, 251, 252):
-                print("RCPT %s refused (%d)" % (r, code), file=sys.stderr)
-                sys.exit(3)
         if a.dry_run:
+            s.mail(a.from_addr)
+            for r in rcpts:
+                code = s.rcpt(r)[0]
+                if code not in (250, 251, 252):
+                    print("RCPT %s refused (%d)" % (r, code), file=sys.stderr)
+                    sys.exit(3)
             s.rset()
             print("dry-run: relay accepted MAIL FROM and all RCPTs (no DATA sent)")
         else:
