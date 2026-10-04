@@ -131,3 +131,26 @@ python3 nntp.py thread --group org.kernel.vger.linux-kernel '<id>'
 
 It scans forward from the thread root; `--max-scan` (default 60000 articles)
 caps how far, and it says `[scan truncated]` if it hits the cap.
+
+## upstream-status.sh — track a merged commit downstream
+
+Given a merged commit SHA, report where it has travelled: mainline, net-next,
+and the stable/stable-rc branches (by the backport's subject in the file log).
+
+```
+upstream-status.sh <sha> \
+    --file drivers/net/ethernet/example/example.c \
+    --subject "subsystem: short commit subject" \
+    [--branches "6.18.y 6.12.y 6.6.y 6.1.y 5.15.y"] \
+    [--ntfy http://ntfy.host/<topic>]
+```
+
+- **mainline / net-next**: the merged commit keeps its SHA, so presence is a
+  `GET /commit/?id=<sha>` (HTTP 200).
+- **stable**: backports get a *new* SHA, so they're found by grepping the
+  branch's log of `--file` for the commit subject.
+- **`--ntfy`** posts the summary, but only when the state changed since the
+  previous run (state file under `~/.cache/vger/`), so a cron/timer won't spam.
+
+Note: cgit's `?qt=grep` search is disabled on git.kernel.org — use the file log
+(as this script does), not the search page.
