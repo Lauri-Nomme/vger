@@ -154,3 +154,25 @@ upstream-status.sh <sha> \
 
 Note: cgit's `?qt=grep` search is disabled on git.kernel.org — use the file log
 (as this script does), not the search page.
+
+## Daily systemd timer
+
+`vger-upstream-status.timer` runs the sweep once a day (`OnCalendar=daily`,
+`Persistent=true`) and posts to ntfy **only when the state changed**.
+
+```sh
+sudo install -m0755 upstream-status.sh upstream-status-run /usr/local/bin/
+sudo install -m0644 vger-upstream-status.service vger-upstream-status.timer /etc/systemd/system/
+sudo install -d /etc/vger /var/lib/vger
+# /etc/vger/upstream.env  (sourced by upstream-status-run; root:root 0640 — holds the ntfy topic)
+#   SHA=<merged-commit-sha>...                       # the merged commit to track
+#   FILE="drivers/net/ethernet/example/example.c"
+#   SUBJECT="subsystem: short commit subject"    # backport subject to grep for
+#   BRANCHES="6.18.y 6.12.y 6.6.y 6.1.y 5.15.y"
+#   NTFY="http://ntfy.host/<topic>"
+#   STATE="/var/lib/vger/upstream.state"
+sudo systemctl daemon-reload
+sudo systemctl enable --now vger-upstream-status.timer
+```
+
+Run it by hand with `sudo systemctl start vger-upstream-status.service`.

@@ -1,0 +1,8 @@
+[Unit]
+Description=vger upstream commit status sweep (mainline/net-next/stable -> ntfy)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/upstream-status-run

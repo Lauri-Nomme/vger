@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Run the vger upstream-status sweep with this host's parameters.
+set -u
+. /etc/vger/upstream.env
+exec /usr/local/bin/upstream-status.sh "$SHA" \
+	--file "$FILE" --subject "$SUBJECT" --branches "$BRANCHES" \
+	--ntfy "$NTFY" --state "${STATE:-/var/lib/vger/upstream.state}"
