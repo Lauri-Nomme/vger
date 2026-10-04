@@ -176,3 +176,8 @@ sudo systemctl enable --now vger-upstream-status.timer
 ```
 
 Run it by hand with `sudo systemctl start vger-upstream-status.service`.
+
+`--stable-group` (default `org.kernel.vger.stable`) and `--list-scan` (default
+8000 subjects) control the stable-mailing-list scan, which reports whether the
+backport *mail* is out yet — so you hear about it before the backport lands in
+a tree. The list scan uses NNTP (`XHDR subject`) over `nntp.lore.kernel.org`.
