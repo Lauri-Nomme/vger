@@ -165,7 +165,7 @@ sudo install -m0755 upstream-status.sh upstream-status-run /usr/local/bin/
 sudo install -m0644 vger-upstream-status.service vger-upstream-status.timer /etc/systemd/system/
 sudo install -d /etc/vger /var/lib/vger
 # /etc/vger/upstream.env  (sourced by upstream-status-run; root:root 0640 — holds the ntfy topic)
-#   SHA=<merged-commit-sha>...                       # the merged commit to track
+#   SHA=<merged-commit-sha>                       # the merged commit to track
 #   FILE="drivers/net/ethernet/example/example.c"
 #   SUBJECT="subsystem: short commit subject"    # backport subject to grep for
 #   BRANCHES="6.18.y 6.12.y 6.6.y 6.1.y 5.15.y"
